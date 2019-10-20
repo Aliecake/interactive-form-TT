@@ -5,6 +5,8 @@ $('#other').hide();
 $('#paypal').hide();
 $('#bitcoin').hide();
 
+let total = 0;
+
 //add new option and select
 const colors = $('#color').prepend(new Option(`Please select a T-shirt theme`, 'none'));
 $(colors[0][0]).attr('selected', 'selected');
@@ -34,46 +36,75 @@ $('#design').change(function() {
 $('.activities').append(`<span class="total">Total: </span>`);
 
 $('.activities').on('change', function() {
-    let total = 0;
+    //reset to 0, loop will count already checked
+    total = 0;
     $("input[type='checkbox']").each(function() {
-        let schedule = {};
+        const event = this;
+        const time = $(this).attr('data-day-and-time');
+
         const checked = $(this).is(':checked');
-        if (checked) {
-            const cost = $(this).attr('data-cost').slice(1, $(this).attr('data-cost').length);
-            const time = $(this).attr('data-day-and-time');
-           
-            total += parseInt(cost);
-            $('.total').show();
-        }
-        //add & subtract cost
+        const price = $(this).attr('data-cost');
+
+        activitiesHandler(checked, price, event, time);
     });
-    if (total === 0){
-        $('.total').hide();
-    }
-    $('.total').text(`Total: $${total}`);
+   
 });
+
+function activitiesHandler(checked, price, event, time) {
+
+    if (checked) {
+        const cost = price.slice(1, price.length);
+        //turn into a int and add the cost to total.
+        total += parseInt(cost);
+        $('.total').show();
+    }
+    total === 0 ? $('.total').hide() : $('.total').text(`Total: $${total}`)
+}
 
 /*
 Some events are at the same day and time as others. If the user selects a workshop, don't allow selection of a workshop at the same day and time 
--- you should disable the checkbox and visually indicate that the workshop in the competing time slot isn't available.
-When a user unchecks an activity, make sure that competing activities (if there are any) are no longer disabled.
+toggle disable
 */
 
+$('#payment').click(function() {
+    if ($(this).children().first()[0].value === 'select method') {
+        $(this).children().first().remove();
+    }
+ });
 
 
 $('#payment').change(function() {
+    const method = this.value.toLowerCase().replace(' ', '-');
+    const selectedPayment = this.value;
+
     $('#payment > option').each(function() {
-        console.log(this.value)
-    })
-    const method = this.value.toLowerCase().replace(' ', '-')
-    $(`#${method}`).show()
+        //disables select, only after another method has been chosen.
+        if(this.value === selectedPayment) {
+            $(`#${method}`).show();
+        } else {
+            const notPayment = this.value.toLowerCase().replace(' ', '-');
+            $(`#${notPayment}`).hide();
+        }
+    });
 });
 
-/*"Payment Info" section
-Display payment sections based on the payment option chosen in the select menu.
- Payment option in the select menu should match the payment option displayed on the page.
-When a user selects the "PayPal" payment option, the PayPal information should display, and the credit card and 
-“Bitcoin” information should be hidden.
-When a user selects the "Bitcoin" payment option, the Bitcoin information should display, and the credit card and “PayPal” information should be hidden.
-NOTE: The user should not be able to select the "Select Payment Method" option from the payment select menu, 
-because the user should not be able to submit the form without a chosen payment option.*/
+
+$('form').submit(function(e) {
+    e.preventDefault();
+    console.log(this.name.value)
+});
+/* Form validation
+If any of the following validation errors exist, prevent the user from submitting the form:
+Name field can't be blank.
+Email field must be a validly formatted e-mail address (you don't have to check that it's a real e-mail address, 
+just that it's formatted like one: dave@teamtreehouse.com for example.
+User must select at least one checkbox under the "Register for Activities" section of the form.
+If the selected payment option is "Credit Card," make sure the user has supplied a Credit Card number, 
+a Zip Code, and a 3 number CVV value before the form can be submitted.
+Credit Card field should only accept a number between 13 and 16 digits.
+The Zip Code field should accept a 5-digit number.
+The CVV should only accept a number that is exactly 3 digits long.
+NOTE: Don't rely on the built in HTML5 validation by adding the required attribute to your DOM elements.
+ You need to actually create your own custom validation checks and error messages.
+ NOTE: Make sure your validation is only validating Credit Card info if Credit Card is the selected payment method.
+ */
