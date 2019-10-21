@@ -2,6 +2,8 @@ console.log('Dear reviewer... If jQuery is not working, check the README.md.');
 
 let total = 0;
 
+//TODO: “Design” menu, no color options appear in the “Color” drop down and the “Color” field reads “Please select a T-shirt theme”.
+
 //**ON LOAD *//
 
 $('#name').focus();
@@ -27,6 +29,7 @@ $('#title').change(function() {
 });
 
 //#DESIGN#//
+//TODO: “Color” drop down menu is hidden until a T-Shirt design is selected.
 
 $('#design').change(function() {
     const selected = this.value.replace(' ', '-');
@@ -43,6 +46,8 @@ $('#design').change(function() {
 
 //#ACTIVITIES#//
 $('.activities').append(`<span class="total">Total: </span>`);
+
+//TODO User cannot select two activities that are at the same time.
 
 $('.activities').on('change', function() {
     //reset to 0, loop will count already checked
@@ -70,10 +75,6 @@ function activitiesHandler(checked, price, event, time) {
     total === 0 ? $('.total').hide() : $('.total').text(`Total: $${total}`)
 }
 
-/*
-Some events are at the same day and time as others. If the user selects a workshop, don't allow selection of a workshop at the same day and time 
-toggle disable
-*/
 
 //#PAYMENT#//
 
@@ -104,8 +105,15 @@ $('#payment').change(function() {
 $('form').submit(function(e) {
     //hide previous submit errors upon multiple submissions
     $('.error').hide();
+
+    //TODO e.preventDefault() should be moved before submission to error zones
     e.preventDefault();
    
+    //TODO: Email Validation Email field contains validly formatted e-mail address: hellO@hello.com
+
+    //TODO: Validate at least one activity is selected
+
+    //TODO: Credit card 13 to 16-digit credit card number
     //check for empty fields
     validEntry(this.name.value, this.name.id);
     validEntry(this.payment.value, this.payment.id);
