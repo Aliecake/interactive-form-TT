@@ -1,4 +1,4 @@
-/* ================================= 
+/* =================================
   Base Element Styles
 ==================================== */
 
@@ -21,7 +21,7 @@ body {
 }
 
 header {
-	text-align: center;  
+	text-align: center;
 }
 
 h1 {
@@ -34,7 +34,7 @@ a {
   text-decoration: none;
 }
 
-/* ================================= 
+/* =================================
   Form Element Styles
 ==================================== */
 
@@ -58,7 +58,7 @@ fieldset {
 
 legend,
 button {
-	font-size: 1.25em;	
+	font-size: 1.25em;
 }
 
 legend {
@@ -82,7 +82,7 @@ label {
 
 input,
 select {
-	margin-bottom: 1.125em;	
+	margin-bottom: 1.125em;
 }
 
 input {
@@ -121,42 +121,65 @@ button:hover {
 	background: #6F9DDC;
 }
 
-input, 
-select, 
+input,
+select,
 option {
 	font-family: 'roboto', sans-serif;
 }
 
-/* ================================= 
-  Page Styles
+/* =================================
+Page Styles
 ==================================== */
 
 .container {
 	margin: auto;
 	max-width: 680px;
 }
-
-.shirt div {
-	float: left;
-	margin-right: .85em;
-}
-
-.interests input {
-	margin-bottom: 0;
-}
-
 .credit-card {
 	margin-top: 1.25em;
 }
+.error {
+	color: red;
+	font-weight: 700;
+}
+.interests input {
+	margin-bottom: 0;
+}
+#js-mail-error {
+	border-radius: 5px;
+	display: none;
+	font-size: 1.3em;
+	text-align: center;
+	position: absolute;
+	background: #2F558E;
+	padding: 7px 10px;
+	color: #fff;
+}
+#js-mail-error:after {
+right: 75%;
+top: -20%;
+content: " ";
+position: absolute;
+content: " ";
+width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 15px 10px 15px;
+border-color: transparent transparent #2F558E transparent;
+}
 select {
-	border: solid black;
-	background-color: #51c1f1;
+	border: solid rgba(6, 87, 121, 0.7);
+	background-color: rgba(8, 63, 87, 0.7);
+}
+.shirt div {
+	float: left;
+	margin-right: .85em;
 }
 .total {
 	display: none;
 }
 
-/* ================================= 
+/* =================================
   Helper Classes
 ==================================== */
 
@@ -170,7 +193,7 @@ select {
   clear: both;
 }
 
-/* ================================= 
+/* =================================
   Media Queries
 ==================================== */
 
