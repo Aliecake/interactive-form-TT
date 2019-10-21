@@ -1,15 +1,21 @@
 console.log('Dear reviewer... If jQuery is not working, check the README.md.');
 
+let total = 0;
+
+//**ON LOAD *//
+
 $('#name').focus();
 $('#other').hide();
 $('#paypal').hide();
 $('#bitcoin').hide();
 
-let total = 0;
-
 //add new option and select
 const colors = $('#color').prepend(new Option(`Please select a T-shirt theme`, 'none'));
 $(colors[0][0]).attr('selected', 'selected');
+
+//******** FORM DYNAMICS ********//
+
+//#TITLE#//
 
 $('#title').change(function() {
     if(this.value === 'other'){
@@ -19,6 +25,8 @@ $('#title').change(function() {
         $('#other').hide();
     }
 });
+
+//#DESIGN#//
 
 $('#design').change(function() {
     const selected = this.value.replace(' ', '-');
@@ -33,6 +41,7 @@ $('#design').change(function() {
     });
 });
 
+//#ACTIVITIES#//
 $('.activities').append(`<span class="total">Total: </span>`);
 
 $('.activities').on('change', function() {
@@ -66,6 +75,8 @@ Some events are at the same day and time as others. If the user selects a worksh
 toggle disable
 */
 
+//#PAYMENT#//
+
 $('#payment').click(function() {
     if ($(this).children().first()[0].value === 'select method') {
         $(this).children().first().remove();
@@ -88,23 +99,59 @@ $('#payment').change(function() {
     });
 });
 
+//******** FORM SUBMIT ********//
 
 $('form').submit(function(e) {
+    //hide previous submit errors upon multiple submissions
+    $('.error').hide();
     e.preventDefault();
-    console.log(this.name.value)
+   
+    //check for empty fields
+    validEntry(this.name.value, this.name.id);
+    validEntry(this.payment.value, this.payment.id);
+    validEntry(this.mail.value, this.mail.id);
+
+    if(this.payment.value === 'Credit Card') {
+        let ccNum = $('#cc-num');
+
+        //check for empty fields
+        validEntry(ccNum.val(), 'cc-num');
+        validEntry(this.zip.value, this.zip.id);
+        validEntry(this.cvv.value, this.cvv.id);
+
+        validCredit(ccNum, this.zip.value, this.cvv.value);
+
+        //validation of zip and cvv
+        validDigits(this.zip.value, this.zip.id, '5');
+        validDigits(this.cvv.value, this.cvv.id, '3');
+    }
 });
+//******** FORM VALIDATION HELPER FUNCTIONS ********//
+
+function validEntry(val, id) {
+    const error = `<span class="error">*Required*</span>`;
+
+    if(val === 'select method' || val === '') {
+        $(`#${id}`).before(error);
+    }
+}
+function validCredit(ccNum, zip, cvv){
+    // console.log(ccNum, zip, cvv)
+}
+function validDigits(val, id, num) {
+    //creates a new regex based on num
+    var regex = new RegExp(`^(\\d{${num}})$`);
+    if(!regex.test(val)) {
+        $(`#${id}`).before(`<span class="error"> *Error: Zip must be ${num} numbers</span>`);
+    }
+}
 /* Form validation
-If any of the following validation errors exist, prevent the user from submitting the form:
-Name field can't be blank.
-Email field must be a validly formatted e-mail address (you don't have to check that it's a real e-mail address, 
-just that it's formatted like one: dave@teamtreehouse.com for example.
-User must select at least one checkbox under the "Register for Activities" section of the form.
-If the selected payment option is "Credit Card," make sure the user has supplied a Credit Card number, 
-a Zip Code, and a 3 number CVV value before the form can be submitted.
+
+Email field must be a validly formatted e-mail address name@email.com
+
+one+ checkbox under the "Register for Activities" section of the form.
+
 Credit Card field should only accept a number between 13 and 16 digits.
-The Zip Code field should accept a 5-digit number.
-The CVV should only accept a number that is exactly 3 digits long.
-NOTE: Don't rely on the built in HTML5 validation by adding the required attribute to your DOM elements.
- You need to actually create your own custom validation checks and error messages.
- NOTE: Make sure your validation is only validating Credit Card info if Credit Card is the selected payment method.
+.
+
  */
