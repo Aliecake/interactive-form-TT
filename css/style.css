@@ -154,19 +154,19 @@ Page Styles
 	background: #2F558E;
 	padding: 7px 10px;
 	color: #fff;
-  }
-  #js-mail-error:after {
-	right: 75%;
-	top: -20%;
-	content: " ";
-	position: absolute;
-	content: " ";
-	width: 0;
-	height: 0;
-	border-style: solid;
-	border-width: 0 15px 10px 15px;
-	border-color: transparent transparent #2F558E transparent;
-  }
+}
+#js-mail-error:after {
+right: 75%;
+top: -20%;
+content: " ";
+position: absolute;
+content: " ";
+width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 15px 10px 15px;
+border-color: transparent transparent #2F558E transparent;
+}
 select {
 	border: solid rgba(6, 87, 121, 0.7);
 	background-color: rgba(8, 63, 87, 0.7);
