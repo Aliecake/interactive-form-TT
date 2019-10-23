@@ -118,23 +118,21 @@ $('#payment').change(function() {
 });
 
 //#E-mail Helper//
-
+//***REAL Time  */
 $('#mail').keyup(function(){
     return validEmail(this.value, this.id)? $('#js-mail-error').hide() : $('#js-mail-error').show();
 });
 
 //******** FORM SUBMIT ********//
 
+let noErrors = true;
+
 $('form').submit(function(e) {
     //hide previous submit errors upon multiple prevented submissions
     $('.error').hide();
+    e.preventDefault();
 
     //TODO e.preventDefault() should be moved before submission to error zones
-    e.preventDefault();
-   
-
-    //TODO: Validate at least one activity is selected
-
     //check for empty fields
     validEntry(this.name.value, this.name.id);
     validEntry(this.payment.value, this.payment.id);
@@ -153,6 +151,10 @@ $('form').submit(function(e) {
         validDigits(this.zip.value, this.zip.id, '5');
         validDigits(this.cvv.value, this.cvv.id, '3');
     }
+   
+    if(noErrors) {
+        location.reload();
+    }
 });
 //******** FORM VALIDATION HELPER FUNCTIONS ********//
 
@@ -160,11 +162,13 @@ function validEntry(val, id) {
     const error = `<span class="error">**Required**</span>`;
 
     if(val === 'select method' || val === '') {
+        noErrors = false;
         $(`#${id}`).before(error);
     }
     //if HTML mail validation fails
     if(id === 'mail') {
       if(!validEmail(val)) {
+        noErrors = false;
         $(`#${id}`).before(`<span class="error">Email is not in valid format</span>`);
       }
     }
@@ -182,14 +186,16 @@ function validEmail(val) {
         return regex.test(val);
 }
 function validActivities (total) {
-    if(total === 0){
+    if(total === 0) {
+        noErrors = false;
         $('.activities').prepend(`<span class="error">**Required: One or more activity</span>`);
     }
 }
 function validCredit(ccNum, id){
-    const digitRegex = /[0-9]{13, 16}/;
+    const digitRegex = /\d{13,16}/;
 
-    if(!digitRegex.test(ccNum)) {
+    if(!digitRegex.test(ccNum.value)) {
+        noErrors = false;
         $(`#${id}`).before(`<span class="error">**Credit Card must be 13-16 numbers</span>`);
     }
 }
@@ -199,6 +205,7 @@ function validDigits(val, id, num) {
     const regex = new RegExp(`^(\\d{${num}})$`);
 
     if(!regex.test(val)) {
+        noErrors = false;
         $(`#${id}`).before(`<span class="error"> *Error: ${id} must be ${num} numbers</span>`);
     }
 }
