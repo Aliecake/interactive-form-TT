@@ -32,7 +32,7 @@ $('#title').change(function() {
 $('#design').change(function() {
     const selected = this.value.replace(' ', '-');
     $('#color > option').each(function() {
-        $('#colors-js-puns').show()
+        $('#colors-js-puns').show();
         //show/hide color options based on design option selection.
         //currently selects all options of category.
         if(selected === this.className){
@@ -46,35 +46,52 @@ $('#design').change(function() {
 //#ACTIVITIES#//
 $('.activities').append(`<span class="total">Total: </span>`);
 
-//TODO User cannot select two activities that are at the same time.
-
 $('.activities').on('change', function() {
     //reset to 0, loop will count already checked
     total = 0;
     $("input[type='checkbox']").each(function() {
-
-        const event = this;
         const time = $(this).attr('data-day-and-time');
-
         const checked = $(this).is(':checked');
         const price = $(this).attr('data-cost');
 
-        activitiesHandler(checked, price, event, time);
+        activitiesTotal(checked, price);
+
+        //not main
+        if(this.name !== 'all') {
+            activitiesTime(this, time, this.checked);
+        }
     });
-   
 });
 
-function activitiesHandler(checked, price, event, time) {
-
+function activitiesTotal(checked, price) {
     if (checked) {
         const cost = price.slice(1, price.length);
         //turn into a int and add the cost to total.
         total += parseInt(cost);
         $('.total').show();
     }
-    total === 0 ? $('.total').hide() : $('.total').text(`Total: $${total}`);
+    return total === 0 ? $('.total').hide() : $('.total').text(`Total: $${total}`);
 }
 
+function activitiesTime(event, time, checked) {
+    $('input[type=checkbox]').each(function() {
+        activityConflict(event, time, this, $(this).attr('data-day-and-time'), checked);
+    });
+}
+
+function activityConflict(event1, time1, event2, time2, scheduled) {
+    // if not same event, and times are at same time
+    if(event1.name !== event2.name && time1 === time2) {
+        $(event2).attr('disabled', scheduled);
+
+        //could not fix for toggleClass to work without toggling 2-4 non-conflicting events.
+        if (scheduled) {
+            $(event2).parent().addClass('activ-conflict');
+        } else {
+            $(event2).parent().removeClass('activ-conflict');
+        }
+    }
+}
 
 //#PAYMENT#//
 
@@ -101,29 +118,26 @@ $('#payment').change(function() {
 });
 
 //#E-mail Helper//
-
+//***REAL Time  */
 $('#mail').keyup(function(){
-    validEmail(this.value, this.id)? $('#js-mail-error').hide() : $('#js-mail-error').show();
+    return validEmail(this.value, this.id)? $('#js-mail-error').hide() : $('#js-mail-error').show();
 });
 
 //******** FORM SUBMIT ********//
 
+let noErrors = true;
+
 $('form').submit(function(e) {
     //hide previous submit errors upon multiple prevented submissions
     $('.error').hide();
+    e.preventDefault();
 
     //TODO e.preventDefault() should be moved before submission to error zones
-    e.preventDefault();
-   
-
-    //TODO: Validate at least one activity is selected
-
     //check for empty fields
     validEntry(this.name.value, this.name.id);
     validEntry(this.payment.value, this.payment.id);
     validEntry(this.mail.value, this.mail.id);
-    
-    console.log($('input[type=checkbox]'))
+    validActivities(total);
     if(this.payment.value === 'Credit Card') {
 
         //check for empty fields
@@ -137,6 +151,10 @@ $('form').submit(function(e) {
         validDigits(this.zip.value, this.zip.id, '5');
         validDigits(this.cvv.value, this.cvv.id, '3');
     }
+   
+    if(noErrors) {
+        location.reload();
+    }
 });
 //******** FORM VALIDATION HELPER FUNCTIONS ********//
 
@@ -144,11 +162,13 @@ function validEntry(val, id) {
     const error = `<span class="error">**Required**</span>`;
 
     if(val === 'select method' || val === '') {
+        noErrors = false;
         $(`#${id}`).before(error);
     }
     //if HTML mail validation fails
     if(id === 'mail') {
       if(!validEmail(val)) {
+        noErrors = false;
         $(`#${id}`).before(`<span class="error">Email is not in valid format</span>`);
       }
     }
@@ -157,7 +177,7 @@ function validEntry(val, id) {
 //Due to rubric I did not use https://www.bram.us/2011/11/29/punycode-js/
 //however, a properly formed email validation would.
 
-function validEmail(val, id) {
+function validEmail(val) {
         //**format: local cannot begin or end with . */
         //** can contain a-z 0-9 ._+%- note: could not void .. */
         //**domain must be 2 or more chars */
@@ -165,20 +185,27 @@ function validEmail(val, id) {
 
         return regex.test(val);
 }
-function validActivities (activities) {
-   
+function validActivities (total) {
+    if(total === 0) {
+        noErrors = false;
+        $('.activities').prepend(`<span class="error">**Required: One or more activity</span>`);
+    }
 }
 function validCredit(ccNum, id){
-    const digitRegex = /[0-9]{13, 16}/;
-    if(!digitRegex.test(ccNum)) {
+    const digitRegex = /\d{13,16}/;
+
+    if(!digitRegex.test(ccNum.value)) {
+        noErrors = false;
         $(`#${id}`).before(`<span class="error">**Credit Card must be 13-16 numbers</span>`);
     }
 }
 
 function validDigits(val, id, num) {
-    //creates a new regex based on num
-    var regex = new RegExp(`^(\\d{${num}})$`);
+    //creates a new regex for num
+    const regex = new RegExp(`^(\\d{${num}})$`);
+
     if(!regex.test(val)) {
+        noErrors = false;
         $(`#${id}`).before(`<span class="error"> *Error: ${id} must be ${num} numbers</span>`);
     }
 }
