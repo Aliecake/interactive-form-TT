@@ -6,7 +6,7 @@ let total = 0;
 
 $('#name').focus();
 $('#other').hide();
-$('#colors-js-puns').hide(); //<div id="colors-js-puns" class="">
+$('#colors-js-puns').hide();
 $('#paypal').hide();
 $('#bitcoin').hide();
 
@@ -132,7 +132,6 @@ $('form').submit(function(e) {
     $('.error').hide();
     e.preventDefault();
 
-    //TODO e.preventDefault() should be moved before submission to error zones
     //check for empty fields
     validEntry(this.name.value, this.name.id);
     validEntry(this.payment.value, this.payment.id);
@@ -159,17 +158,19 @@ $('form').submit(function(e) {
 //******** FORM VALIDATION HELPER FUNCTIONS ********//
 
 function validEntry(val, id) {
-    const error = `<span class="error">**Required**</span>`;
-
-    if(val === 'select method' || val === '') {
+    if(val === '') {
         noErrors = false;
-        $(`#${id}`).before(error);
+        $(`#${id}`).before(error(`Cannot be blank. `));
+    }
+    if(val === 'select method'){
+        noErrors = false;
+        $(`#${id}`).before(error(`Valid payment method`));
     }
     //if HTML mail validation fails
     if(id === 'mail') {
       if(!validEmail(val)) {
         noErrors = false;
-        $(`#${id}`).before(`<span class="error">Email is not in valid format</span>`);
+        $(`#${id}`).before(error(`Email is not in valid format.`));
       }
     }
 }
@@ -188,7 +189,7 @@ function validEmail(val) {
 function validActivities (total) {
     if(total === 0) {
         noErrors = false;
-        $('.activities').prepend(`<span class="error">**Required: One or more activity</span>`);
+        $('.activities').prepend(error(`One or more activity MUST be selected.`));
     }
 }
 function validCredit(ccNum, id){
@@ -196,7 +197,7 @@ function validCredit(ccNum, id){
 
     if(!digitRegex.test(ccNum.value)) {
         noErrors = false;
-        $(`#${id}`).before(`<span class="error">**Credit Card must be 13-16 numbers</span>`);
+        $(`#${id}`).before(error(`Credit card must be 13-16 digits.`));
     }
 }
 
@@ -206,6 +207,10 @@ function validDigits(val, id, num) {
 
     if(!regex.test(val)) {
         noErrors = false;
-        $(`#${id}`).before(`<span class="error"> *Error: ${id} must be ${num} numbers</span>`);
+        $(`#${id}`).before(error(`digits required`, num, id));
     }
+}
+//Error Helper
+function error(msg, num='', id='') {
+    return `<span class="error">**Required: ${num} ${id} ${msg} </span>`
 }
