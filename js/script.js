@@ -1,4 +1,4 @@
-console.log('Dear reviewer... If jQuery is not working, check the README.md.');
+console.log('Dear reviewer... If jQuery is not working use npm i . check the README.md.');
 
 let total = 0;
 
