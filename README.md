@@ -27,12 +27,18 @@ npm start
 The project window should pop up
 
 For reference, the projects source files can be found in
+
 /src/script.js
+
 /css/style.css
+
 ./index.html
 
 
 ### Node
+
+If you dont have Node installed
+
 - #### Node installation on Windows
 
   Just go on [official Node.js website](https://nodejs.org/) and download the installer.
