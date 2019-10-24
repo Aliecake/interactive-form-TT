@@ -1,4 +1,6 @@
-console.log('Dear reviewer... If jQuery is not working use npm i . check the README.md.');
+import "normalize.css";
+import "../css/style.css";
+import $ from 'jquery';
 
 let total = 0;
 
