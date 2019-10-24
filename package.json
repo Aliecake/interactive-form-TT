@@ -1,25 +1,35 @@
 {
   "name": "interactive-form-v1",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "An interactive form with error handling and changed based upon user selections. Made using jQuery Real time error messages show for email field, until a correctly formatted ASCII email is entered.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --config webpack.dev.js --open",
+    "build": "webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Aliecake/interactive-form-TT.git"
   },
-  "author": "",
+  "author": "lauren eggers",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Aliecake/interactive-form-TT/issues"
   },
   "homepage": "https://github.com/Aliecake/interactive-form-TT#readme",
   "dependencies": {
+    "webpack": "^4.41.2",
     "jquery": "^3.4.1",
     "normalize.css": "^8.0.1"
+  },
+  "devDependencies": {
+    "css-loader": "^3.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^1.0.0",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
   }
 }
-
-

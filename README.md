@@ -10,11 +10,27 @@ Conditional Error Message : credit card, zip, cvv, etc.
 
 Both the normalize.css and jQuery are dependencies and require Node.js
 
-In terminal:
+To get started in development mode and automatically open up the project on port 8080
+If not already in project directory
+
+terminal/command line:
 ```
 cd interactive-form-TT
-npm i
 ```
+
+Then in terminal/command line:
+```
+npm i
+npm start
+```
+
+The project window should pop up
+
+For reference, the projects source files can be found in
+/src/script.js
+/css/style.css
+./index.html
+
 
 ### Node
 - #### Node installation on Windows
